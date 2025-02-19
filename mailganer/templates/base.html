@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      {% comment %} <title>Создание рассылки</title> {% endcomment %}
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+
+  <body class="d-flex flex-column min-vh-100">
+
+    <main class="flex-grow-1">
+      {% block content %}Контент{% endblock %}
+
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+      <script>
+        $(document).ready(function() {
+            function getCSRFToken() {
+                var name = "csrftoken=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') c = c.substring(1);
+                    if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+                }
+                return "";
+            }
+
+            $('#newsletterForm').on('submit', function(event) {
+                event.preventDefault();
+
+                var formData = {
+                    'subject': $('#subject').val(),
+                    'message': $('#message').val()
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/newsletter/send_newsletter/',
+                    data: formData,
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken()
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $('#responseMessage').html('<div class="alert alert-success">Рассылка отправлена!</div>');
+                        } else {
+                            $('#responseMessage').html('<div class="alert alert-danger">' + response.message + '</div>');
+                        }
+                    }
+                });
+            });
+        });
+        </script>
+    </main>
+  </body>
+</html>
