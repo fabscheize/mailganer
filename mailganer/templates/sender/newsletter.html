@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container-fluid" style="padding: 1rem;">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1>Мои рассылки</h1>
+
+      <!-- Кнопка-триггер модального окна создания рассылки -->
+      <button type="button" class="btn btn-primary hero-btn" data-bs-toggle="modal" data-bs-target="#createHabitModal">
+        Создать
+      </button>
+    </div>
+
+    <!-- Все рассылки -->
+    <div class="row g-3 mx-1 my-2">
+      {% for newsletter in newsletters %}
+        {% include "includes/habit_card.html" with newsletter=newsletter %}
+      {% empty %}
+        <div class="col-12">
+          <p class="fs-4">Жми кнопку <b class="prime-color">Создать</b> для новой рассылки</p>
+
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Модальное окно создания рассылки -->
+  <div class="modal modal-lg fade" id="createHabitModal" tabindex="-1" aria-labelledby="createHabitModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="createHabitModalLabel">Создать новую рассылку</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+
+        <!-- Форма создания рассылки -->
+        <form method="post" novalidate>
+          <div class="modal-body">
+            {% csrf_token %}
+            {% include "includes/form.html" with form=form %}
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Если форма невалидна, открываем модальное окно при перезагрузке -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if form.errors %}
+          var myModal = new bootstrap.Modal(document.getElementById('createHabitModal'));
+          myModal.show();
+        {% endif %}
+
+        var createHabitModal = document.getElementById('createHabitModal');
+        var form = createHabitModal.querySelector('form');
+
+        function resetForm() {
+          form.reset();
+          var invalidFields = form.querySelectorAll('.is-invalid, .is-valid');
+          invalidFields.forEach(function(field) {
+            field.classList.remove('is-invalid', 'is-valid');
+          });
+
+          var errorMessages = form.querySelectorAll('.invalid-feedback, .valid-feedback');
+          errorMessages.forEach(function(message) {
+            message.textContent = '';
+          });
+        }
+
+        createHabitModal.addEventListener('hidden.bs.modal', function() {
+          resetForm();
+        });
+
+        var closeButton = createHabitModal.querySelector('[data-bs-dismiss="modal"]');
+        closeButton.addEventListener('click', function() {
+          resetForm();
+        });
+      });
+    </script>
+
+  {% endblock %}

@@ -1,0 +1,10 @@
+<div class="col-12">
+  {% comment %} <a href="{% url 'habits:settings' pk=habit.id %}" class="text-decoration-none"> {% endcomment %}
+    <div class="card" style="min-height: 80px; max-width: 934px;">
+      <div class="card-body justify-content-between d-flex align-items-center">
+        <p class="fs-3 mb-0">{{ newsletter.subject }}</p>
+          <p class="fs-3 mb-1">{{ newsletter.created_at|date:"d.m.Y H:i" }}</p>
+      </div>
+    </div>
+  {% comment %} </a> {% endcomment %}
+</div>
