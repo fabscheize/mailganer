@@ -29,5 +29,5 @@ class Newsletter(models.Model):
     subject = models.CharField(
         max_length=100,
     )
-    # message = tinymce_models.HTMLField()
-    message = models.TextField()
+    message = tinymce_models.HTMLField()
+    # message = models.TextField()

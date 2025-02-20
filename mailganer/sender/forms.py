@@ -5,10 +5,6 @@ from django import forms
 from sender import models
 from tinymce.widgets import TinyMCE
 
-# class NewsletterForm(forms.Form):
-#     subject = forms.CharField(max_length=255)
-#     message = forms.CharField(widget=forms.Textarea)
-
 
 class BaseModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -37,13 +33,13 @@ class NewsletterForm(BaseModelForm):
             'message': 'Обязательное поле',
         }
         widgets = {
-            'message': forms.Textarea(
-            # 'message': TinyMCE(
-                {
-                    'rows': 5,
-                    'aria-describedby': 'id_textHelp',
-                },
-            ),
+            'message': TinyMCE
+            # 'message': forms.Textarea
+            #     {
+            #         'rows': 5,
+            #         # 'aria-describedby': 'id_messageHelp',
+            #     },
+            # ),
         }
         error_messages = {
             'subject': {
