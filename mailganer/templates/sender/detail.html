@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container-fluid" style="padding: 1rem;">
+    <div class="container-fluid d-flex justify-content-left">
+      <a href="{% url 'sender:main' %}" class="btn btn-outline-primary" role="button" aria-disabled="true">Назад</a>
+      <h1 class="mx-3">Отправленная рассылка</h1>
+    </div>
+
+    <div class="row gx-0 gy-3 mx-1 my-2" style="min-height: 80px; max-width: 934px;">
+      <div class="card">
+        <div class="card-header">
+          <b>{{ object.subject }}</b>
+        </div>
+        <div class="card-body">
+          <p class="card-text">{{ object.message|safe }}</p>
+        </div>
+      </div>
+
+        <h3>Дата отправления:</h3><p class="fs-4 mb-0">{{ object.created_at }}</p>
+
+        {% if viewed_subscribers %}
+          <h3>Подписчики, просмотревшие рассылку:</h3>
+
+          <ul class="list-group">
+            {% for subscriber in viewed_subscribers %}
+            <li class="list-group-item">{{ subscriber.email }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        <p>Рассылку просмотрело {{ viewed_subscribers_count }} из {{ reached_subs_count }} подписчиков</p>
+    </div>
+  </div>
+  {% endblock %}

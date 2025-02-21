@@ -6,7 +6,7 @@
       <h1>Мои рассылки</h1>
 
       <!-- Кнопка-триггер модального окна создания рассылки -->
-      <button type="button" class="btn btn-primary hero-btn" data-bs-toggle="modal" data-bs-target="#createHabitModal">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createHabitModal">
         Создать
       </button>
     </div>
@@ -14,11 +14,10 @@
     <!-- Все рассылки -->
     <div class="row g-3 mx-1 my-2">
       {% for newsletter in newsletters %}
-        {% include "includes/habit_card.html" with newsletter=newsletter %}
+        {% include "includes/card.html" with newsletter=newsletter %}
       {% empty %}
         <div class="col-12">
           <p class="fs-4">Жми кнопку <b class="prime-color">Создать</b> для новой рассылки</p>
-
         </div>
       {% endfor %}
     </div>

@@ -23,24 +23,19 @@ class NewsletterForm(BaseModelForm):
     class Meta:
         model = models.Newsletter
 
-        exclude = ('created_at',)
+        exclude = (
+            'created_at',
+            'reached_subs',
+            'read_subs',
+        )
         labels = {
             'subject': 'Тема письма',
             'message': 'Сообщение',
         }
         help_texts = {
-            'subject': 'Обязательное поле',
-            'message': 'Обязательное поле',
+            'message': 'Для персонализации сообщения выберете переменную нажав на значок тега в панели инструментов',
         }
-        widgets = {
-            'message': TinyMCE
-            # 'message': forms.Textarea
-            #     {
-            #         'rows': 5,
-            #         # 'aria-describedby': 'id_messageHelp',
-            #     },
-            # ),
-        }
+        widgets = {'message': TinyMCE()}
         error_messages = {
             'subject': {
                 'required': 'Пожалуйста, заполните тему письма',
