@@ -1,21 +1,16 @@
-#!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
-from django.http import JsonResponse
 from django.core.mail import send_mail
-from django.shortcuts import redirect, render, get_object_or_404
-from django.template.loader import render_to_string
-from django.template import Template, Context
-from sender.forms import NewsletterForm
-from sender.models import Subscriber, Newsletter
-import django.views.generic
 import django.db
-import django.shortcuts
-from django.core.urlresolvers import reverse
-from django.http import Http404, HttpResponse
-from io import BytesIO
+from sender.forms import NewsletterForm
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import redirect, render, get_object_or_404
+from django.template import Template, Context
+import django.views.generic
+
+from sender.models import Subscriber, Newsletter
+
 from PIL import Image
-import json
 
 TEMPLATE_HEAD = '<html><body>'
 TEMPLATE_TAIL = '<img src="http://localhost:8000/newsletter/track?newsletter_id={{newsletter_id}}&subscriber_id={{subscriber_id}}" width="1" height="1" /></body></html>'

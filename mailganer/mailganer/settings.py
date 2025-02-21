@@ -117,7 +117,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
-# TINYMCE_JS_ROOT = os.path.join(STATIC_URL, 'js/tinymce/tinymce.min.js')
 TINYMCE_JS_ROOT = os.path.join(BASE_DIR, 'static_dev', 'js', 'tinymce', 'tinymce.min.js')
 
 TINYMCE_COMPRESSOR = False
