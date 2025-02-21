@@ -1,10 +1,8 @@
-<div class="col-12">
-  <a href="{% url 'sender:newsletter' newsletter_id=newsletter.id %}" class="text-decoration-none">
-    <div class="card" style="min-height: 80px; max-width: 934px;">
-      <div class="card-body justify-content-between d-flex align-items-center">
-        <p class="fs-3 mb-0">{{ newsletter.subject }}</p>
-        <p class="fs-3 mb-1">{{ newsletter.created_at|date:"d.m.Y H:i" }}</p>
-      </div>
+<a href="{% url 'sender:newsletter' newsletter_id=newsletter.id %}" class="text-decoration-none">
+  <div class="card my-3">
+    <div class="card-body justify-content-between d-flex align-items-center">
+      <p class="fs-3 mb-0">{{ newsletter.subject }}</p>
+      <p class="fs-3 mb-1">{{ newsletter.created_at|date:"d.m.Y H:i" }}</p>
     </div>
-  </a>
-</div>
+  </div>
+</a>

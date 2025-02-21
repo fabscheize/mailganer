@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 
+{% block title %}Отправленная рассылка{% endblock %}
+
 {% block content %}
-  <div class="container-fluid" style="padding: 1rem;">
-    <div class="container-fluid d-flex justify-content-left">
+  <div class="container-fluid" style="padding: 2rem;">
+    <div class="container-fluid d-flex justify-content-left align-items-center">
       <a href="{% url 'sender:main' %}" class="btn btn-outline-primary" role="button" aria-disabled="true">Назад</a>
       <h1 class="mx-3">Отправленная рассылка</h1>
     </div>
 
-    <div class="row gx-0 gy-3 mx-1 my-2" style="min-height: 80px; max-width: 934px;">
-      <div class="card">
+    <div class="container g-3 mx-1 my-2" style="min-height: 80px; max-width: 934px;">
+      <div class="card my-3">
         <div class="card-header">
           <b>{{ object.subject }}</b>
         </div>
@@ -17,19 +19,23 @@
         </div>
       </div>
 
-        <h3>Дата отправления:</h3><p class="fs-4 mb-0">{{ object.created_at }}</p>
+      <div class="my-3">
+        <p class="fs-4 mb-0 my-3"><b>Дата отправления:</b> {{ object.created_at }}</p>
+      </div>
 
+      <div class="my-3">
         {% if viewed_subscribers %}
-          <h3>Подписчики, просмотревшие рассылку:</h3>
+          <p class="fs-4 mb-0 my-3">Подписчики, просмотревшие рассылку:</p>
 
-          <ul class="list-group">
+          <ul class="list-group my-3">
             {% for subscriber in viewed_subscribers %}
-            <li class="list-group-item">{{ subscriber.email }}</li>
+              <li class="list-group-item">{{ subscriber.email }}</li>
             {% endfor %}
           </ul>
         {% endif %}
 
         <p>Рассылку просмотрело {{ viewed_subscribers_count }} из {{ reached_subs_count }} подписчиков</p>
+      </div>
     </div>
   </div>
   {% endblock %}

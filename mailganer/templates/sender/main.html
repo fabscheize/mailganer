@@ -1,39 +1,39 @@
 {% extends "base.html" %}
 
+{% block title %}Moи рассылки{% endblock %}
+
 {% block content %}
-  <div class="container-fluid" style="padding: 1rem;">
+  <div class="container-fluid" style="padding: 2rem;">
     <div class="container-fluid d-flex justify-content-between">
       <h1>Мои рассылки</h1>
 
       <!-- Кнопка-триггер модального окна создания рассылки -->
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createHabitModal">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createNewsletterModal">
         Создать
       </button>
     </div>
 
     <!-- Все рассылки -->
-    <div class="row g-3 mx-1 my-2">
+    <div class="container g-3 mx-1 my-2" style="max-width: 934px;">
       {% for newsletter in newsletters %}
         {% include "includes/card.html" with newsletter=newsletter %}
       {% empty %}
-        <div class="col-12">
-          <p class="fs-4">Жми кнопку <b class="prime-color">Создать</b> для новой рассылки</p>
-        </div>
+        <p class="fs-4">Жми кнопку <b>Создать</b> для новой рассылки</p>
       {% endfor %}
     </div>
   </div>
 
   <!-- Модальное окно создания рассылки -->
-  <div class="modal modal-lg fade" id="createHabitModal" tabindex="-1" aria-labelledby="createHabitModalLabel" aria-hidden="true">
+  <div class="modal modal-lg fade" id="createNewsletterModal" tabindex="-1" aria-labelledby="createNewsletterModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="createHabitModalLabel">Создать новую рассылку</h1>
+          <h1 class="modal-title fs-5" id="createNewsletterModalLabel">Создать новую рассылку</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
         </div>
 
         <!-- Форма создания рассылки -->
-        <form method="post" novalidate>
+        <form id="newsletter-form" method="post" action="{% url 'sender:main' %}" novalidate>
           <div class="modal-body">
             {% csrf_token %}
             {% include "includes/form.html" with form=form %}
@@ -41,46 +41,92 @@
 
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <button type="submit" class="btn btn-primary">Отправить</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 
-  <!-- Если форма невалидна, открываем модальное окно при перезагрузке -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        {% if form.errors %}
-          var myModal = new bootstrap.Modal(document.getElementById('createHabitModal'));
-          myModal.show();
-        {% endif %}
+    tinymce.init({
+      selector: '#id_message',
+      language: 'ru',
+      plugins: [
+        'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+        'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'mentions', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
+      ],
+      toolbar: 'mergetags | undo redo | blocks fontsize | bold italic underline strikethrough',
+      mergetags_list: [
+        { value: 'first_name', title: 'Имя' },
+        { value: 'last_name', title: 'Фамилия' },
+        { value: 'birthday', title: 'День рождения' },
+        { value: 'email', title: 'Email' },
+      ],
+    });
+  </script>
 
-        var createHabitModal = document.getElementById('createHabitModal');
-        var form = createHabitModal.querySelector('form');
+  <script>
+    $(document).ready(function() {
+      $('#newsletter-form').submit(function(event) {
+        event.preventDefault();
 
-        function resetForm() {
-          form.reset();
-          var invalidFields = form.querySelectorAll('.is-invalid, .is-valid');
-          invalidFields.forEach(function(field) {
-            field.classList.remove('is-invalid', 'is-valid');
-          });
+        var form = $(this);
+        var formData = form.serialize();
 
-          var errorMessages = form.querySelectorAll('.invalid-feedback, .valid-feedback');
-          errorMessages.forEach(function(message) {
-            message.textContent = '';
-          });
-        }
+        $.ajax({
+          type: form.attr('method'),
+          url: form.attr('action'),
+          data: formData,
+          dataType: 'json',
 
-        createHabitModal.addEventListener('hidden.bs.modal', function() {
-          resetForm();
-        });
+          beforeSend: function() {
+            form.find('button[type="submit"]').prop('disabled', true);
+          },
 
-        var closeButton = createHabitModal.querySelector('[data-bs-dismiss="modal"]');
-        closeButton.addEventListener('click', function() {
-          resetForm();
+          success: function(response) {
+            $('#createNewsletterModal').modal('hide');
+            form.trigger('reset');
+
+            var newCard = `
+              <a href="/newsletter/${response.newsletter.id}/" class="text-decoration-none">
+                  <div class="card my-3">
+                      <div class="card-body justify-content-between d-flex align-items-center">
+                          <p class="fs-3 mb-0">${response.newsletter.subject}</p>
+                          <p class="fs-3 mb-1">${response.newsletter.created_at}</p>
+                      </div>
+                  </div>
+              </a>
+            `;
+            $(".container").prepend(newCard);
+
+            var alertMessage = `
+              <div class="alert alert-success alert-dismissible fade show my-3" role="alert">
+                ${response.message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+              </div>
+            `;
+            $(".container").prepend(alertMessage);
+          },
+
+          error: function(xhr) {
+            form.find('.is-invalid').removeClass('is-invalid');
+            form.find('.invalid-feedback').remove();
+
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+              $.each(xhr.responseJSON.errors, function(field, messages) {
+                var inputField = $('#id_' + field);
+                inputField.addClass('is-invalid');
+                inputField.after(`<div class="invalid-feedback">${messages.join('<br>')}</div>`);
+              });
+            }
+          },
+
+          complete: function() {
+            form.find('button[type="submit"]').prop('disabled', false);
+          }
         });
       });
-    </script>
-
-  {% endblock %}
+    });
+  </script>
+{% endblock %}
