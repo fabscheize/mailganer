@@ -29,7 +29,7 @@
 1. Создать виртуальное окружение:
 
   ```bash
-  python virtualenv venv
+  python -m virtualenv venv
   ```
 
 1. Активировать виртуальное окружение:
@@ -67,7 +67,7 @@
 1. Применить миграции:
 
    ```bash
-   python3 manage.py migrate
+   python manage.py migrate
    ```
 
 2. Можно воспользоваться демонстрационной БД – для это необходимо скопировать ее из файла:
@@ -81,7 +81,7 @@
 - Создать суперпользователя для админки:
 
   ```bash
-  python3 manage.py createsuperuser
+  python manage.py createsuperuser
   ```
 
   (следовать инструкциям скрипта)
@@ -96,5 +96,5 @@
 - Запустить сервер:
 
   ```bash
-  python3 manage.py runserver
+  python manage.py runserver
   ```
